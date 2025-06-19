@@ -623,7 +623,7 @@
         const cartels = new Map();
 
         for (let row of rawData) {
-          const cartelName = row[12]; // Colonne L - Cartel
+          const cartelName = row[11]; // Colonne L - Cartel
           const points = parseInt(row[15]) || 0; // Colonne P - Points
           const finalScore = parseInt(row[18]) || 0; // Colonne S - Final Score
 
