@@ -502,21 +502,21 @@
           ["DaddyAbe", "1", "1", "100%", "2"],
           ["Orlando", "1", "1", "100%", "2"],
           ["BerryLockedin", "1", "1", "100%", "1"],
-          ["Pitaszenko", "1", "0", "0%", "0"]
+          ["Pitaszenko", "1", "0", "0%", "0"],
         ];
 
         const mockCartelData = [
           ["LA MOUCHADA", "20", "100"], // Colonnes P et S
           ["LOS CHOQUEROS", "18", "86"],
           ["THE MOBLAND DAKS", "15", "72"],
-          ["MOYAKIS FAMILIA", "6", "29"]
+          ["MOYAKIS FAMILIA", "6", "29"],
         ];
 
         const mockEventsData = [
           ["19/06/2025", "12h pm UTC", "Monad Discord"],
           ["20/06/2025", "13h UTC", "Monad Discord"],
           ["24/06/2025", "16h pm UTC", "Monad Discord"],
-          ["25/06/2025", "17h UTC", "Monad Discord"]
+          ["25/06/2025", "17h UTC", "Monad Discord"],
         ];
 
         displayData(mockPlayerData, mockCartelData, mockEventsData);
@@ -532,7 +532,9 @@
           // Utilisation d'un proxy CORS pour contourner les restrictions
           const proxyUrl = "https://api.allorigins.win/raw?url=";
 
-          const response = await fetch(`${proxyUrl}${encodeURIComponent(dashboardSheetUrl)}`);
+          const response = await fetch(
+            `${proxyUrl}${encodeURIComponent(dashboardSheetUrl)}`
+          );
 
           if (!response.ok) {
             throw new Error("Erreur réseau lors de l'accès aux données");
@@ -590,66 +592,78 @@
 
       function extractPlayerData(rawData) {
         const playerData = [];
-        
+
         for (let row of rawData) {
           // Vérifier si la ligne contient des données de joueur valides
-          if (row[0] && row[0].trim() !== "" && row[9] && !isNaN(parseInt(row[9]))) {
+          if (
+            row[0] &&
+            row[0].trim() !== "" &&
+            row[9] &&
+            !isNaN(parseInt(row[9]))
+          ) {
             const player = [
               row[0] || "N/A", // Colonne A - Player
-              row[1] || "0",   // Colonne B - V (Victoires)
-              row[2] || "0",   // Colonne C - D (Défaites)
-              row[3] || "0%",  // Colonne D - Win Rate
-              row[9] || "0"    // Colonne J - Points (corrigé)
+              row[1] || "0", // Colonne B - V (Victoires)
+              row[2] || "0", // Colonne C - D (Défaites)
+              row[3] || "0%", // Colonne D - Win Rate
+              row[9] || "0", // Colonne J - Points (corrigé)
             ];
             playerData.push(player);
           }
         }
-        
+
         // Trier par points (colonne J) en ordre décroissant
         playerData.sort((a, b) => parseInt(b[4]) - parseInt(a[4]));
-        
+
         return playerData;
       }
 
       function extractCartelData(rawData) {
         const cartelData = [];
         const cartels = new Map();
-        
+
         for (let row of rawData) {
           const cartelName = row[14]; // Colonne O - Cartel
           const points = parseInt(row[15]) || 0; // Colonne P - Points
           const finalScore = parseInt(row[18]) || 0; // Colonne S - Final Score
-          
+
           if (cartelName && cartelName.trim() !== "") {
-            if (!cartels.has(cartelName) || cartels.get(cartelName).finalScore < finalScore) {
+            if (
+              !cartels.has(cartelName) ||
+              cartels.get(cartelName).finalScore < finalScore
+            ) {
               cartels.set(cartelName, { points, finalScore });
             }
           }
         }
-        
+
         // Convertir en tableau et trier par Final Score
         for (let [name, data] of cartels) {
-          cartelData.push([name, data.points.toString(), data.finalScore.toString()]);
+          cartelData.push([
+            name,
+            data.points.toString(),
+            data.finalScore.toString(),
+          ]);
         }
-        
+
         cartelData.sort((a, b) => parseInt(b[2]) - parseInt(a[2]));
-        
+
         return cartelData;
       }
 
       function extractEventsData(rawData) {
         const eventsData = [];
-        
+
         for (let row of rawData) {
           const date = row[22]; // Colonne W - Date
           const time = row[23]; // Colonne X - Heure
           const location = row[24]; // Colonne Y - Emplacement
-          
+
           if (date && date.trim() !== "" && time && location) {
             eventsData.push([date, time, location]);
           }
         }
-        
+
         return eventsData.slice(0, 4); // Limiter à 4 événements
       }
 
@@ -747,11 +761,11 @@
 
         // Affichage des événements depuis les données ou événements par défaut
         if (eventsData && eventsData.length > 0) {
-          eventsData.forEach(event => {
+          eventsData.forEach((event) => {
             const date = event[0] || "TBD";
             const time = event[1] || "TBD";
             const location = event[2] || "TBD";
-            
+
             html += `
                             <div class="match-card">
                                 <div class="match-date">${date} - ${time}</div>
@@ -765,10 +779,10 @@
             ["18/06/2025", "15h UTC", "À définir"],
             ["19/06/2025", "15h UTC", "À définir"],
             ["20/06/2025", "15h UTC", "À définir"],
-            ["21/06/2025", "15h UTC", "À définir"]
+            ["21/06/2025", "15h UTC", "À définir"],
           ];
-          
-          defaultEvents.forEach(event => {
+
+          defaultEvents.forEach((event) => {
             html += `
                             <div class="match-card">
                                 <div class="match-date">${event[0]} - ${event[1]}</div>
@@ -841,3 +855,4 @@
     </script>
   </body>
 </html>
+
