@@ -429,22 +429,22 @@
   </head>
   <body>
     <div class="container">
-      <div class="mode-indicator" id="modeIndicator">🔧 Mode Développement</div>
-      <div class="last-update" id="lastUpdate">Dernière MAJ: --:--</div>
+      <div class="mode-indicator" id="modeIndicator">🔧 Dev Mode</div>
+      <div class="last-update" id="lastUpdate">Last UPDATE: --:--</div>
 
       <div class="header">
         <h1>🔥 DASHBOARD CARTELS 🔥</h1>
-        <p>Classements en temps réel des joueurs et cartels</p>
+        <p>Real Time Players & Cartels Leaderboards</p>
       </div>
 
       <div id="content">
         <div class="loading">
-          <p>Chargement des données en cours...</p>
+          <p>Loading current data...</p>
         </div>
       </div>
     </div>
 
-    <button class="refresh-btn" onclick="loadData()">🔄 Actualiser</button>
+    <button class="refresh-btn" onclick="loadData()">🔄 Refresh</button>
 
     <script>
       // Configuration avec l'ID correct de votre Google Sheet
@@ -462,7 +462,7 @@
         try {
           const content = document.getElementById("content");
           content.innerHTML =
-            '<div class="loading"><p>Chargement des données en cours...</p></div>';
+            '<div class="loading"><p>Loading current data...</p></div>';
 
           if (IS_LOCAL) {
             console.log(
@@ -567,7 +567,7 @@
           }
 
           displayData(playerData, cartelData);
-          showSuccessMessage("Données mises à jour avec succès !");
+          showSuccessMessage("Data successfully updated !");
         } catch (error) {
           console.error("Impossible de charger les données réelles:", error);
           throw error;
@@ -610,13 +610,13 @@
         let html = `
                 <div class="dashboard-grid">
                     <div class="section">
-                        <h2>🏆 Classement Joueurs</h2>
+                        <h2>🏆 Players Leaderboard</h2>
                         <div class="table-container">
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Rang</th>
-                                        <th>Joueur</th>
+                                        <th>Ranking</th>
+                                        <th>Player</th>
                                         <th>V</th>
                                         <th>D</th>
                                         <th>Win Rate</th>
@@ -660,15 +660,15 @@
                     </div>
 
                     <div class="section">
-                        <h2>🎯 Classement Cartels</h2>
+                        <h2>🎯 Cartel Leaderboard</h2>
                         <div class="table-container">
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Rang</th>
+                                        <th>Ranking</th>
                                         <th>Cartel</th>
                                         <th>Points</th>
-                                        <th>Score Final</th>
+                                        <th>Final Score</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -698,7 +698,7 @@
                     </div>
 
                     <div class="section schedule">
-                        <h2>📅 Prochains Matchs</h2>
+                        <h2>📅 Next Eventss</h2>
                         <div class="schedule-grid">
                             <div class="match-card">
                                 <div class="match-date">18/06/2025 - 15h UTC</div>
@@ -735,7 +735,7 @@
         const content = document.getElementById("content");
         const successDiv = document.createElement("div");
         successDiv.className = "success-message";
-        successDiv.innerHTML = `<strong>✅ Succès:</strong> ${message}`;
+        successDiv.innerHTML = `<strong>✅ Success:</strong> ${message}`;
         content.insertBefore(successDiv, content.firstChild);
 
         setTimeout(() => {
@@ -754,7 +754,7 @@
         });
         document.getElementById(
           "lastUpdate"
-        ).textContent = `Dernière MAJ: ${timeString}`;
+        ).textContent = `Last UPDATE: ${timeString}`;
         lastUpdateTime = now;
       }
 
@@ -765,11 +765,11 @@
       document.addEventListener("DOMContentLoaded", () => {
         const modeIndicator = document.getElementById("modeIndicator");
         if (IS_LOCAL) {
-          modeIndicator.textContent = "🔧 Mode Développement (Données de test)";
+          modeIndicator.textContent = "🔧 Dev Mode (Test Data)";
           modeIndicator.style.backgroundColor = "rgba(255,193,7,0.9)";
           modeIndicator.style.color = "#000";
         } else {
-          modeIndicator.textContent = "🌐 Mode Production (Données réelles)";
+          modeIndicator.textContent = "🌐 Production Mode (Real Data)";
           modeIndicator.style.backgroundColor = "rgba(40,167,69,0.9)";
         }
 
