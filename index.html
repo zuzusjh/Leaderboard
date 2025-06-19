@@ -1,47 +1,4 @@
-<!DOCTYPE html>
-<html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard Cartels</title>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: "Arial", sans-serif;
-        background: linear-gradient(135deg, #1a1a1a, #2d1810, #1a1a1a);
-        color: #f4f4f4;
-        min-height: 100vh;
-        padding: 20px;
-        animation: backgroundShift 10s ease-in-out infinite alternate;
-      }
-
-      @keyframes backgroundShift {
-        0% {
-          background: linear-gradient(135deg, #1a1a1a, #2d1810, #1a1a1a);
-        }
-        100% {
-          background: linear-gradient(135deg, #2d1810, #1a1a1a, #2d1810);
-        }
-      }
-
-      .container {
-        max-width: 1400px;
-        margin: 0 auto;
-      }
-
-      .header {
-        text-align: center;
-        margin-bottom: 40px;
-        background: linear-gradient(45deg, #ff6b35, #ff4500, #ff6b35);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        background-size: 200% 200%;
+200% 200%;
         animation: gradientShift 3s ease-in-out infinite alternate;
       }
 
@@ -484,56 +441,42 @@
       }
 
       function loadMockData() {
-        // Données extraites de votre Google Sheet pour la démo
+        // Données extraites de votre Google Sheet pour la démo (colonnes corrigées)
         const mockPlayerData = [
-          [
-            "BippyBallVR",
-            "9",
-            "8",
-            "1",
-            "88%",
-            "16",
-            "LA MOUCHADA",
-            "100",
-            "3.1",
-          ],
-          ["Nohak", "3", "3", "0", "100%", "6", "LOS CHOQUEROS", "96", "2.97"],
-          ["Nintitude", "4", "2", "2", "50%", "4", "THE MOBLAND", "75", "2.34"],
-          [
-            "SleepyAvocado",
-            "2",
-            "2",
-            "0",
-            "100%",
-            "4",
-            "MOYAKIS FAMILIA",
-            "22",
-            "0.69",
-          ],
-          ["KidBoy", "2", "1", "1", "50%", "2", "THE MOBLAND", "75", "1.0"],
-          [
-            "David King",
-            "1",
-            "1",
-            "0",
-            "100%",
-            "2",
-            "LA MOUCHADA",
-            "100",
-            "1.0",
-          ],
-          ["Roras", "2", "1", "1", "50%", "2", "LOS CHOQUEROS", "96", "1.0"],
-          ["Sachin", "2", "1", "1", "50%", "2", "MOYAKIS FAMILIA", "22", "1.0"],
+          ["BippyBallVR", "10", "9", "90%", "18"], // Colonne J (Points)
+          ["Nohak", "4", "3", "75%", "6"],
+          ["Nintitude", "4", "2", "50%", "4"],
+          ["Midari", "3", "2", "67%", "4"],
+          ["Roras", "3", "2", "67%", "4"],
+          ["SleepyAvocado", "3", "2", "67%", "4"],
+          ["KolBoy", "2", "1", "50%", "2"],
+          ["David King", "1", "1", "100%", "2"],
+          ["Sachin", "2", "1", "50%", "2"],
+          ["Eli", "2", "1", "50%", "2"],
+          ["Calimero", "2", "1", "50%", "2"],
+          ["Pince_croco", "1", "1", "100%", "2"],
+          ["Rabanaga", "1", "1", "100%", "2"],
+          ["DaddyAbe", "1", "1", "100%", "2"],
+          ["Orlando", "1", "1", "100%", "2"],
+          ["BerryLockedin", "1", "1", "100%", "1"],
+          ["Pitaszenko", "1", "0", "0%", "0"]
         ];
 
         const mockCartelData = [
-          ["LA MOUCHADA", "18", "100"],
-          ["LOS CHOQUEROS", "18", "96"],
-          ["THE MOBLAND DAKS", "13", "75"],
-          ["MOYAKIS FAMILIA", "4", "22"],
+          ["LA MOUCHADA", "20", "100"], // Colonnes P et S
+          ["LOS CHOQUEROS", "18", "86"],
+          ["THE MOBLAND DAKS", "15", "72"],
+          ["MOYAKIS FAMILIA", "6", "29"]
         ];
 
-        displayData(mockPlayerData, mockCartelData);
+        const mockEventsData = [
+          ["19/06/2025", "12h pm UTC", "Monad Discord"],
+          ["20/06/2025", "13h UTC", "Monad Discord"],
+          ["24/06/2025", "16h pm UTC", "Monad Discord"],
+          ["25/06/2025", "17h UTC", "Monad Discord"]
+        ];
+
+        displayData(mockPlayerData, mockCartelData, mockEventsData);
         showSuccessMessage("Données de démonstration chargées avec succès !");
       }
 
@@ -541,32 +484,30 @@
         try {
           // URLs pour accéder aux données CSV de votre Google Sheet
           const baseUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
-          const playerSheetUrl = `${baseUrl}&sheet=Stat%20Joueur`;
-          const cartelSheetUrl = `${baseUrl}&sheet=Stat%20Cartel`;
+          const dashboardSheetUrl = `${baseUrl}&sheet=Dashboard`;
 
           // Utilisation d'un proxy CORS pour contourner les restrictions
           const proxyUrl = "https://api.allorigins.win/raw?url=";
 
-          const [playerResponse, cartelResponse] = await Promise.all([
-            fetch(`${proxyUrl}${encodeURIComponent(playerSheetUrl)}`),
-            fetch(`${proxyUrl}${encodeURIComponent(cartelSheetUrl)}`),
-          ]);
+          const response = await fetch(`${proxyUrl}${encodeURIComponent(dashboardSheetUrl)}`);
 
-          if (!playerResponse.ok || !cartelResponse.ok) {
+          if (!response.ok) {
             throw new Error("Erreur réseau lors de l'accès aux données");
           }
 
-          const playerCSV = await playerResponse.text();
-          const cartelCSV = await cartelResponse.text();
+          const dashboardCSV = await response.text();
+          const rawData = parseCSV(dashboardCSV);
 
-          const playerData = parseCSV(playerCSV);
-          const cartelData = parseCSV(cartelCSV);
-
-          if (playerData.length === 0 || cartelData.length === 0) {
+          if (rawData.length === 0) {
             throw new Error("Données vides reçues");
           }
 
-          displayData(playerData, cartelData);
+          // Extraction des données selon les colonnes spécifiées
+          const playerData = extractPlayerData(rawData);
+          const cartelData = extractCartelData(rawData);
+          const eventsData = extractEventsData(rawData);
+
+          displayData(playerData, cartelData, eventsData);
           showSuccessMessage("Data successfully updated !");
         } catch (error) {
           console.error("Impossible de charger les données réelles:", error);
@@ -599,12 +540,77 @@
               }
             }
             values.push(current.trim().replace(/^"|"$/g, ""));
-            return values.filter((val) => val !== "");
+            return values;
           })
           .filter((row) => row.length > 0 && row[0] !== "");
       }
 
-      function displayData(playerData, cartelData) {
+      function extractPlayerData(rawData) {
+        const playerData = [];
+        
+        for (let row of rawData) {
+          // Vérifier si la ligne contient des données de joueur valides
+          if (row[0] && row[0].trim() !== "" && row[9] && !isNaN(parseInt(row[9]))) {
+            const player = [
+              row[0] || "N/A", // Colonne A - Player
+              row[1] || "0",   // Colonne B - V (Victoires)
+              row[2] || "0",   // Colonne C - D (Défaites)
+              row[3] || "0%",  // Colonne D - Win Rate
+              row[9] || "0"    // Colonne J - Points (corrigé)
+            ];
+            playerData.push(player);
+          }
+        }
+        
+        // Trier par points (colonne J) en ordre décroissant
+        playerData.sort((a, b) => parseInt(b[4]) - parseInt(a[4]));
+        
+        return playerData;
+      }
+
+      function extractCartelData(rawData) {
+        const cartelData = [];
+        const cartels = new Map();
+        
+        for (let row of rawData) {
+          const cartelName = row[14]; // Colonne O - Cartel
+          const points = parseInt(row[15]) || 0; // Colonne P - Points
+          const finalScore = parseInt(row[18]) || 0; // Colonne S - Final Score
+          
+          if (cartelName && cartelName.trim() !== "") {
+            if (!cartels.has(cartelName) || cartels.get(cartelName).finalScore < finalScore) {
+              cartels.set(cartelName, { points, finalScore });
+            }
+          }
+        }
+        
+        // Convertir en tableau et trier par Final Score
+        for (let [name, data] of cartels) {
+          cartelData.push([name, data.points.toString(), data.finalScore.toString()]);
+        }
+        
+        cartelData.sort((a, b) => parseInt(b[2]) - parseInt(a[2]));
+        
+        return cartelData;
+      }
+
+      function extractEventsData(rawData) {
+        const eventsData = [];
+        
+        for (let row of rawData) {
+          const date = row[22]; // Colonne W - Date
+          const time = row[23]; // Colonne X - Heure
+          const location = row[24]; // Colonne Y - Emplacement
+          
+          if (date && date.trim() !== "" && time && location) {
+            eventsData.push([date, time, location]);
+          }
+        }
+        
+        return eventsData.slice(0, 4); // Limiter à 4 événements
+      }
+
+      function displayData(playerData, cartelData, eventsData) {
         const content = document.getElementById("content");
 
         let html = `
@@ -621,8 +627,6 @@
                                         <th>D</th>
                                         <th>Win Rate</th>
                                         <th>Points</th>
-                                        <th>Cartel</th>
-                                        <th>Score</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -634,10 +638,8 @@
           const nom = player[0] || "N/A";
           const victoires = player[1] || "0";
           const defaites = player[2] || "0";
-          const winRate = player[4] || "0%";
-          const points = player[5] || "0";
-          const cartel = player[6] || "N/A";
-          const score = player[7] || "0";
+          const winRate = player[3] || "0%";
+          const points = player[4] || "0";
 
           html += `
                     <tr class="${rankClass}">
@@ -647,8 +649,6 @@
                         <td>${defaites}</td>
                         <td>${winRate}</td>
                         <td>${points}</td>
-                        <td><em>${cartel}</em></td>
-                        <td>${score}</td>
                     </tr>
                 `;
         });
@@ -698,24 +698,44 @@
                     </div>
 
                     <div class="section schedule">
-                        <h2>📅 Next Eventss</h2>
+                        <h2>📅 Next Events</h2>
                         <div class="schedule-grid">
+            `;
+
+        // Affichage des événements depuis les données ou événements par défaut
+        if (eventsData && eventsData.length > 0) {
+          eventsData.forEach(event => {
+            const date = event[0] || "TBD";
+            const time = event[1] || "TBD";
+            const location = event[2] || "TBD";
+            
+            html += `
                             <div class="match-card">
-                                <div class="match-date">18/06/2025 - 15h UTC</div>
-                                <div>Match à définir - En attente des participants</div>
+                                <div class="match-date">${date} - ${time}</div>
+                                <div>📍 ${location}</div>
                             </div>
+                        `;
+          });
+        } else {
+          // Événements par défaut si aucune donnée n'est disponible
+          const defaultEvents = [
+            ["18/06/2025", "15h UTC", "À définir"],
+            ["19/06/2025", "15h UTC", "À définir"],
+            ["20/06/2025", "15h UTC", "À définir"],
+            ["21/06/2025", "15h UTC", "À définir"]
+          ];
+          
+          defaultEvents.forEach(event => {
+            html += `
                             <div class="match-card">
-                                <div class="match-date">19/06/2025 - 15h UTC</div>
-                                <div>Match à définir - En attente des participants</div>
+                                <div class="match-date">${event[0]} - ${event[1]}</div>
+                                <div>📍 ${event[2]}</div>
                             </div>
-                            <div class="match-card">
-                                <div class="match-date">20/06/2025 - 15h UTC</div>
-                                <div>Match à définir - En attente des participants</div>
-                            </div>
-                            <div class="match-card">
-                                <div class="match-date">21/06/2025 - 15h UTC</div>
-                                <div>Match à définir - En attente des participants</div>
-                            </div>
+                        `;
+          });
+        }
+
+        html += `
                         </div>
                     </div>
                 </div>
